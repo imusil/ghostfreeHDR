@@ -10,3 +10,6 @@ Folder "images" contains author's HDR sets and selected sets from Tursun and Kar
 
 Results of HDR merging with and without proposed ghost-free merging algorithm are in folder "results", so as certainty maps for individual input images.
 The reference image is fixed to middle image in the sequence
+
+Results of the proposed algorithm on selected HDR datasets are available online at:
+https://drive.google.com/drive/folders/1GIKqiqas0z_0jf1vPHALU5NQF15FvAqu?usp=sharing
