@@ -1,0 +1,3 @@
+ExposureTime: 1/60
+ISO: 320
+FNumber: 7.1
