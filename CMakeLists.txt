@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.9)
+cmake_minimum_required(VERSION 3.1)
 project(hdr_lib)
 
 set(CMAKE_CXX_STANDARD 11)
