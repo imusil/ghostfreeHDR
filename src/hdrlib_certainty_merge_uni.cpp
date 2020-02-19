@@ -181,6 +181,7 @@ void hdr::CertaintyMergeUni::merge()
         sequencePtrs[i] = (float*)(sequence.at(i).data);
         ghostPtrs[i] = (float*)(ghost.at(i).data);
     }
+    float refImageConfidence = (images/2.0 + 1.0);
 
 	for (uint32_t y = 0; y < h; y++)
 	{
@@ -211,17 +212,16 @@ void hdr::CertaintyMergeUni::merge()
 					}
 
                     //calculating pixel confidence, based on pixel certainty
-					float pixelConfidence = pixelWeight * ((1.0) - ((1.0) - certainty));
+					float pixelConfidence = pixelWeight * certainty;
+					
 					if((pixelConfidence) < 0.01)
 						pixelConfidence = 0.0;
-                    //the complement of pixel confidence is added to reference pixel confidence
-					refPixelConfidence += 2*((1.0) + ((1.0) - certainty));
 
                     //partial pixel and weight sum
 					finalPixel += exposureRatios.at(i) * pixel * pixelConfidence;
 					totalWeight += pixelConfidence;
 				}
-
+				refPixelConfidence += 1.0;//refImageConfidence;
 				//adding the contribution of reference pixel
 				float pixel = sequencePtrs[referenceIndex][(w*y + x)*3 + ch];
 				finalPixel += exposureRatios.at(referenceIndex) * pixel * refPixelConfidence;
@@ -259,7 +259,7 @@ void hdr::CertaintyMergeUni::writeImages(std::string path)
                     ghostMatrixPtr[w*y + x] = (unsigned char)(ghostPtr[w*y + x] * 255.0);
                 }
             }
-			cv::imwrite(path+"CertaintyMap"+std::to_string(i)+".bmp", ghostMatrix);
+			cv::imwrite(path+"CertaintyMap"+std::to_string(i)+".jpg", ghostMatrix);
 		}	
 	}
 			

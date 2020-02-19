@@ -7,7 +7,7 @@
 
 
 #include "block_bilateral.hpp"
-
+#include <opencv2/core/core_c.h>
 
 #define MMIN(X,Y) (X) < (Y) ? (X) : (Y)
 #define MMAX(X,Y) (X) > (Y) ? (X) : (Y)

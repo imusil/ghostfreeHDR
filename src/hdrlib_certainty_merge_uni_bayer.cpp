@@ -196,7 +196,8 @@ void hdr::CertaintyMergeUniBayer::merge()
         sequencePtrs[i] = (float*)(sequence.at(i).data);
         ghostPtrs[i] = (float*)(ghost.at(i).data);
     }
-
+	float refImageConfidence = (images/2.0 + 1.0);
+	
     for (uint32_t y = 0; y < h; y++)
     {
         for (uint32_t x = 0; x < w; x++)
@@ -228,15 +229,12 @@ void hdr::CertaintyMergeUniBayer::merge()
 		 		
                 if((pixelConfidence) < 0.01)
                     pixelConfidence = 0.0;
-                //the complement of pixel confidence is added to reference pixel confidence
-                refPixelConfidence += 2*(((2.0) - certainty));
 		
                 //partial pixel and weight sum
                 finalPixel += exposureRatios.at(i) * pixel * pixelConfidence;
                 totalWeight += pixelConfidence;
-
             }
-
+			refPixelConfidence += 1.0;//refImageConfidence;
             //adding the contribution of reference pixel
             float pixel = sequencePtrs[referenceIndex][w*y + x];
             finalPixel += exposureRatios.at(referenceIndex) * pixel * refPixelConfidence;

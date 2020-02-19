@@ -22,9 +22,16 @@
 
 int main (int argc, char *argv[])
 {
+    if (argc < 2){
+        std::cout<<"Wrong parameters, missing No. of images"<< std::endl;
+    }
+
     unsigned int images = (unsigned int)strtol(argv[1], NULL, 10);
 
-	if (argc < images*2)
+    /*for (int j = 0; j < argc; ++j) {
+        printf("argv[%d]:%s\n", j, argv[j]);
+    }*/
+	if (argc < images*2+4)
 	{
 		std::cout << "Wrong parameter count\n";
 		return -1;
@@ -37,7 +44,8 @@ int main (int argc, char *argv[])
 		expTime[i] = (unsigned int)strtol(argv[(images+2)+i], NULL, 10);
 	}
 
-	std::string outPath = argv[images*2+2];
+	std::string outPath = argv[images*2+3];
+	std::string sigmaStr = argv[images*2+2];
 	hdr::LdrMat ldr[images];
 	hdr::LdrMat ldrLoadedBayer[images];
 	hdr::LdrMat ldrBayer[images];
@@ -110,9 +118,11 @@ int main (int argc, char *argv[])
 		}
 	}
 
+	float sigma = std::stof(sigmaStr, nullptr);
+	
     std::cout << "Running the Merging without deghosting" << std::endl;
     simpleMerge->setSequence(ldrSeq);
-    simpleMerge->setParameters(11.0f, referenceIndex, ghostExposureRatios, exposureRatios);     //implementing only the common interface, only exposureRatios are used by simpleMerge
+    simpleMerge->setParameters(sigma, referenceIndex, ghostExposureRatios, exposureRatios);     //implementing only the common interface, only exposureRatios are used by simpleMerge
     simpleMerge->apply();
     simpleMerge->writeImages(outPath);
 
@@ -120,16 +130,24 @@ int main (int argc, char *argv[])
     std::cout << "Running the Merging with deghosting" << std::endl;
 	// 2. inicialization of deghost parameters
 	certaintyMerge->setSequence(ldrSeq);
-	certaintyMerge->setParameters(11.0f, referenceIndex, ghostExposureRatios, exposureRatios);
+	
+	certaintyMerge->setParameters(sigma, referenceIndex, ghostExposureRatios, exposureRatios);
 	// 3. HDR Merging
 	certaintyMerge->apply();
 	//td::cout << "applied" << std::endl;
 	certaintyMerge->writeImages(outPath);
-	if(argc == images*2+4){
-		std::cout<< "printing .hdr output to: " << argv[images*2+3] << std::endl;
-		cv::imwrite(argv[images*2+3], certaintyMerge->getImage());
+	if(argc == images*2+5){
+		std::cout<< "printing .hdr output to: " << argv[images*2+4] << std::endl;
+		cv::imwrite(argv[images*2+4], certaintyMerge->getImage());
 	}
-
+/*
+	//std::cout << "saved" << std::endl;
+	hdr::tmo::TonemapDurand durand = hdr::tmo::TonemapDurand(certaintyMerge->getImage());
+	durand.prepare(15, 2, 2.0);
+	durand.apply();
+	durand.writeImages(outPath);
+    auto finish = std::chrono::high_resolution_clock::now();
+*/
 	return 0;
 }
 

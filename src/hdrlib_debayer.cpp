@@ -6,6 +6,7 @@
  */
 
 #include "hdrlib_base.hpp"
+#include <opencv2/imgproc/imgproc_c.h>
 
 namespace hdr
 {

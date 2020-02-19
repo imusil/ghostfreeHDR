@@ -7,7 +7,8 @@
 
 
 #include "hdrlib_base.hpp"
-
+#include <opencv2/core/core_c.h>
+#include <opencv2/imgproc/imgproc_c.h>
 
 namespace hdr
 {
@@ -15,7 +16,7 @@ namespace hdr
 
 cv::Mat imageRead(std::string path)
 {
-	cv::Mat im = cv::imread(path, CV_LOAD_IMAGE_UNCHANGED);
+	cv::Mat im = cv::imread(path, cv::IMREAD_UNCHANGED);
 
 	return im;
 }
